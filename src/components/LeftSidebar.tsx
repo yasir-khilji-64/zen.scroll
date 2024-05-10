@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { SidebarLinks } from '@/contants';
 
-export default function LeftSidebar() {
+export function LeftSidebar() {
   return (
     <section className="sticky left-0 top-0 flex h-auto w-fit flex-col justify-between overflow-auto max-md:hidden">
       <div className="flex flex-1 flex-col text-base gap-4">

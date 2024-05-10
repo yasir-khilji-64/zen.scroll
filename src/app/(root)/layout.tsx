@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
 import '../globals.css';
 import { Navbar } from '@/components/Navbar';
-import LeftSidebar from '@/components/LeftSidebar';
-import RightSidebar from '@/components/RightSidebar';
-import Bottombar from '@/components/Bottombar';
+import { LeftSidebar } from '@/components/LeftSidebar';
+import { RightSidebar } from '@/components/RightSidebar';
+import { Bottombar } from '@/components/Bottombar';
 
 export const metadata: Metadata = {
   title: 'Zen Scroll',
