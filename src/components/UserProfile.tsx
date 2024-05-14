@@ -1,9 +1,11 @@
 'use client';
 
+import React, { ChangeEvent, useState } from 'react';
 import { Send } from 'lucide-react';
 import { z } from 'zod';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useUploadThing } from '@/lib/uploadthing';
 import {
   Card,
   CardContent,
@@ -22,6 +24,7 @@ const Schema = z.object({
   username: z
     .string({ message: 'Provide a valid username' })
     .min(3, { message: 'Username must be atleast 3 characters' }),
+  avatar_url: z.string().url({ message: 'Provide a valid avatar url' }),
   bio: z
     .string({ message: 'User must provide bio for onboarding' })
     .min(10, { message: 'Bio must be atleast 10 characters long' })
@@ -54,18 +57,40 @@ export const UserProfile: React.FC<IUserProfileProps> = ({
     register,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors },
   } = useForm<SchemaType>({
     resolver: zodResolver(Schema),
     defaultValues: {
       username: user.username ?? '',
+      avatar_url: user.avatar_url,
       bio: user.bio ?? '',
     },
   });
 
-  const onSubmit: SubmitHandler<SchemaType> = (data) => {
-    console.log(data);
-    reset();
+  const { startUpload } = useUploadThing('media');
+
+  const [image, setImage] = useState<string>(user.avatar_url ?? '');
+  const [file, setFile] = useState<File | null>(null);
+
+  const onSubmit: SubmitHandler<SchemaType> = async (data) => {
+    const userData: SchemaType = data;
+    if (file !== null) {
+      const result = await startUpload([file]);
+      if (result !== undefined) {
+        setValue('avatar_url', result[0].url);
+        userData.avatar_url = result[0].url;
+      }
+    }
+    console.log(userData);
+  };
+
+  const onImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files === null || e.target.files[0] === null) {
+      return;
+    }
+    setImage(URL.createObjectURL(e.target.files[0]));
+    setFile(e.target.files[0]);
   };
 
   return (
@@ -78,7 +103,7 @@ export const UserProfile: React.FC<IUserProfileProps> = ({
         <CardContent>
           <div className="space-y-2">
             <Avatar className="w-24 h-24">
-              <AvatarImage src={user.avatar_url} />
+              <AvatarImage src={image} />
               <AvatarFallback className="text-2xl font-medium">
                 {user.username
                   ?.split(' ')
@@ -86,7 +111,7 @@ export const UserProfile: React.FC<IUserProfileProps> = ({
                   .join('')}
               </AvatarFallback>
             </Avatar>
-            <Input type="file" accept="image/*" />
+            <Input type="file" accept="image/*" onChange={onImageChange} />
           </div>
           <div className="my-1">
             <Label

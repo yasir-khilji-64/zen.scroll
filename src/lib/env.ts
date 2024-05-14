@@ -23,6 +23,12 @@ const schema = z.object({
   NEXT_PUBLIC_CLERK_SIGN_UP_FORCE_REDIRECT_URL: z.string({
     message: 'Clerk SignIn Force Redirect URL not provided',
   }),
+  UPLOADTHING_SECRET: z.string({
+    message: 'UploadThing Secret not provided',
+  }),
+  UPLOADTHING_APP_ID: z.string({
+    message: 'UploadThing App ID not provided',
+  }),
 });
 
 export const env = schema.parse(process.env);
