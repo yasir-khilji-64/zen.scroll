@@ -5,7 +5,8 @@ import { Send } from 'lucide-react';
 import { z } from 'zod';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useUploadThing } from '@/lib/uploadthing';
+import { getSignedURL } from '@/app/actions/file-upload.actions';
+import { FileBuckets, config } from '@/lib/utils';
 import {
   Card,
   CardContent,
@@ -56,8 +57,6 @@ export const UserProfile: React.FC<IUserProfileProps> = ({
   const {
     register,
     handleSubmit,
-    reset,
-    setValue,
     formState: { errors },
   } = useForm<SchemaType>({
     resolver: zodResolver(Schema),
@@ -68,21 +67,33 @@ export const UserProfile: React.FC<IUserProfileProps> = ({
     },
   });
 
-  const { startUpload } = useUploadThing('media');
-
   const [image, setImage] = useState<string>(user.avatar_url ?? '');
   const [file, setFile] = useState<File | null>(null);
+  const imageTypes = config.FILE_TYPES.IMAGE.join(',');
 
   const onSubmit: SubmitHandler<SchemaType> = async (data) => {
     const userData: SchemaType = data;
-    if (file !== null) {
-      const result = await startUpload([file]);
-      if (result !== undefined) {
-        setValue('avatar_url', result[0].url);
-        userData.avatar_url = result[0].url;
+    try {
+      if (file !== null) {
+        const { url } = await getSignedURL(
+          FileBuckets.PROFILE,
+          file.type,
+          file.size
+        );
+        console.log(url);
+        await fetch(url, {
+          method: 'PUT',
+          body: file,
+          headers: {
+            'Content-Type': file.type,
+          },
+        });
+        [userData.avatar_url] = url.split('?');
       }
+      console.log(userData);
+    } catch (error) {
+      console.error(error);
     }
-    console.log(userData);
   };
 
   const onImageChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -111,7 +122,7 @@ export const UserProfile: React.FC<IUserProfileProps> = ({
                   .join('')}
               </AvatarFallback>
             </Avatar>
-            <Input type="file" accept="image/*" onChange={onImageChange} />
+            <Input type="file" accept={imageTypes} onChange={onImageChange} />
           </div>
           <div className="my-1">
             <Label

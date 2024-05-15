@@ -10,4 +10,4 @@ const ServerEnvSchema = z.object({
   AWS_BUCKET: z.string({ message: 'AWS Bucket not provided' }),
 });
 
-export const SeverEnv = ServerEnvSchema.parse(process.env);
+export const ServerEnv = ServerEnvSchema.parse(process.env);
