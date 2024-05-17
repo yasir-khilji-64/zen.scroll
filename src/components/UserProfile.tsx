@@ -1,11 +1,14 @@
 'use client';
 
 import React, { ChangeEvent, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Send } from 'lucide-react';
 import { z } from 'zod';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { getSignedURL } from '@/app/actions/file-upload.actions';
+import { UserType } from '@/lib/schemas/user.schema';
+import { createUser } from '@/app/actions/user.actions';
 import { FileBuckets, config } from '@/lib/utils';
 import {
   Card,
@@ -20,6 +23,8 @@ import { Input } from './ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { Textarea } from './ui/textarea';
 import { Label } from './ui/label';
+import { useToast } from './ui/use-toast';
+import { ToastAction } from './ui/toast';
 
 const Schema = z.object({
   username: z
@@ -67,12 +72,21 @@ export const UserProfile: React.FC<IUserProfileProps> = ({
     },
   });
 
+  const router = useRouter();
+  const imageTypes = config.FILE_TYPES.IMAGE.join(',');
   const [image, setImage] = useState<string>(user.avatar_url ?? '');
   const [file, setFile] = useState<File | null>(null);
-  const imageTypes = config.FILE_TYPES.IMAGE.join(',');
+  const { toast } = useToast();
 
   const onSubmit: SubmitHandler<SchemaType> = async (data) => {
-    const userData: SchemaType = data;
+    const userData: UserType = {
+      user_id: user.user_id,
+      username: data.username,
+      email: user.email ?? '',
+      avatar_url: data.avatar_url,
+      bio: data.bio,
+      is_onboarded: true,
+    };
     try {
       if (file !== null) {
         const { url } = await getSignedURL(
@@ -80,7 +94,6 @@ export const UserProfile: React.FC<IUserProfileProps> = ({
           file.type,
           file.size
         );
-        console.log(url);
         await fetch(url, {
           method: 'PUT',
           body: file,
@@ -90,9 +103,16 @@ export const UserProfile: React.FC<IUserProfileProps> = ({
         });
         [userData.avatar_url] = url.split('?');
       }
-      console.log(userData);
+      await createUser(userData);
+      router.replace('/');
     } catch (error) {
-      console.error(error);
+      const err = error as Error;
+      toast({
+        variant: 'destructive',
+        title: err.name,
+        description: err.message,
+        action: <ToastAction altText="Try again">Try again</ToastAction>,
+      });
     }
   };
 
