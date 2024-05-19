@@ -11,7 +11,7 @@ export default async function Page() {
   }
 
   const dbUser = await getUsers();
-  if (dbUser.user.is_onboarded) {
+  if (dbUser.user?.is_onboarded) {
     redirect('/');
   }
 

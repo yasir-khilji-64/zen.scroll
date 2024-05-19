@@ -2,7 +2,7 @@
 
 import React, { ChangeEvent, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Send } from 'lucide-react';
+import { Loader2, Send } from 'lucide-react';
 import { z } from 'zod';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -62,7 +62,8 @@ export const UserProfile: React.FC<IUserProfileProps> = ({
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    reset,
+    formState: { errors, isSubmitted, isValid },
   } = useForm<SchemaType>({
     resolver: zodResolver(Schema),
     defaultValues: {
@@ -113,6 +114,8 @@ export const UserProfile: React.FC<IUserProfileProps> = ({
         description: err.message,
         action: <ToastAction altText="Try again">Try again</ToastAction>,
       });
+    } finally {
+      reset();
     }
   };
 
@@ -182,7 +185,8 @@ export const UserProfile: React.FC<IUserProfileProps> = ({
           </div>
         </CardContent>
         <CardFooter>
-          <Button className="w-full">
+          <Button className="w-full" disabled={!isValid}>
+            {isSubmitted && <Loader2 className="mr-2 w-5 h-5" />}
             {buttonTitle}
             <Send className="ml-2 w-5 h-5" />
           </Button>

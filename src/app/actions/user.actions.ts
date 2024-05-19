@@ -46,6 +46,11 @@ export async function getUsers() {
       },
     ]);
     console.log(users);
+    if (users.length === 0) {
+      return {
+        user: null,
+      };
+    }
     return {
       user: JSON.parse(JSON.stringify(users[0])),
     };

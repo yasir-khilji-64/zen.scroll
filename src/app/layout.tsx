@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Poppins } from 'next/font/google';
 import { dark } from '@clerk/themes';
 import { ClerkProvider } from '@clerk/nextjs';
+import NextTopLoader from 'nextjs-toploader';
 import './globals.css';
 import { cn } from '@/lib/utils';
 import { ThemeProvider } from '@/components/ThemeProvider';
@@ -42,6 +43,7 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
+            <NextTopLoader color="#003E8C" showSpinner={false} easing="ease" />
             {children}
           </ThemeProvider>
           <Toaster />
