@@ -10,8 +10,8 @@ import { FileBuckets, config } from '@/lib/utils';
 const s3 = new S3Client({
   region: ServerEnv.AWS_REGION,
   credentials: {
-    accessKeyId: ServerEnv.AWS_ACCESS_KEY,
-    secretAccessKey: ServerEnv.AWS_SECRET_KEY,
+    accessKeyId: ServerEnv.AWS_ACCESS,
+    secretAccessKey: ServerEnv.AWS_SECRET,
   },
 });
 
