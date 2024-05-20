@@ -1,8 +1,12 @@
 import type { Metadata } from 'next';
 import { Poppins } from 'next/font/google';
+import { dark } from '@clerk/themes';
+import { ClerkProvider } from '@clerk/nextjs';
+import NextTopLoader from 'nextjs-toploader';
 import './globals.css';
 import { cn } from '@/lib/utils';
 import { ThemeProvider } from '@/components/ThemeProvider';
+import { Toaster } from '@/components/ui/toaster';
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -21,22 +25,30 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body
-        className={cn(
-          'min-h-svh bg-background font-sans antialiased',
-          poppins.variable
-        )}
-      >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          enableSystem
-          disableTransitionOnChange
+    <ClerkProvider
+      appearance={{
+        baseTheme: dark,
+      }}
+    >
+      <html lang="en" suppressHydrationWarning>
+        <body
+          className={cn(
+            'min-h-svh bg-background font-sans antialiased',
+            poppins.variable
+          )}
         >
-          {children}
-        </ThemeProvider>
-      </body>
-    </html>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="dark"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <NextTopLoader color="#003E8C" showSpinner={false} easing="ease" />
+            {children}
+          </ThemeProvider>
+          <Toaster />
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

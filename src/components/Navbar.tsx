@@ -1,6 +1,7 @@
-import { LogIn, ScrollText } from 'lucide-react';
-import Link from 'next/link';
 import React from 'react';
+import Link from 'next/link';
+import { SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
+import { LogIn, ScrollText } from 'lucide-react';
 import { Button } from './ui/button';
 
 export function Navbar() {
@@ -17,16 +18,25 @@ export function Navbar() {
           </Link>
         </nav>
         <div className="flex justify-end items-center gap-4">
-          <Button variant="ghost" className="hover:underline">
-            <p className="text-base">Create Account</p>
-          </Button>
-          <Button
-            variant="secondary"
-            className="hover:underline hover:bg-primary hover:text-primary-foreground"
-          >
-            <p className="text-base">Login</p>
-            <LogIn className="ml-2 h-5 w-5" />
-          </Button>
+          <SignedOut>
+            <Link href="/sign-up">
+              <Button variant="ghost" className="hover:underline">
+                <p className="">Create Account</p>
+              </Button>
+            </Link>
+            <Link href="/sign-in">
+              <Button
+                variant="secondary"
+                className="hover:underline hover:bg-primary hover:text-primary-foreground"
+              >
+                <p className="">Login</p>
+                <LogIn className="ml-2 h-4 w-4" />
+              </Button>
+            </Link>
+          </SignedOut>
+          <SignedIn>
+            <UserButton userProfileMode="modal" />
+          </SignedIn>
         </div>
       </header>
     </div>

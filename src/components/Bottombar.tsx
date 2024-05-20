@@ -2,7 +2,7 @@ import { SidebarLinks } from '@/contants';
 import Link from 'next/link';
 import React from 'react';
 
-export default function Bottombar() {
+export function Bottombar() {
   return (
     <section className="fixed bottom-0 h-16 z-10 w-full rounded-t-2xl p-4 backdrop-blur-lg bg-accent/40 sm:px6 md:hidden">
       <div className="flex items-center justify-between gap-2 sm:gap-4">
