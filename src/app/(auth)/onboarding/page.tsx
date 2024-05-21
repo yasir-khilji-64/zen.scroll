@@ -1,4 +1,4 @@
-import { getUsers } from '@/app/actions/user.actions';
+import { getUser } from '@/app/actions/user.actions';
 import { UserProfile } from '@/components/UserProfile';
 import { currentUser } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
@@ -10,7 +10,7 @@ export default async function Page() {
     redirect('/sign-in');
   }
 
-  const dbUser = await getUsers();
+  const dbUser = await getUser();
   if (dbUser.user?.is_onboarded) {
     redirect('/');
   }
