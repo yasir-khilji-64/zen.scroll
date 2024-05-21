@@ -1,10 +1,13 @@
 import React from 'react';
 import Link from 'next/link';
-import { SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
 import { LogIn, ScrollText } from 'lucide-react';
+import { SignedIn, SignedOut } from '@clerk/nextjs';
+import { getUser } from '@/app/actions/user.actions';
 import { Button } from './ui/button';
+import { UserAvatar } from './UserAvatar';
 
-export function Navbar() {
+export async function Navbar() {
+  const { user } = await getUser();
   return (
     <div className="flex w-full border-b bg-background sticky">
       <header className="container flex flex-row top-0 h-16 items-center gap-4 px-4 md:px-6">
@@ -35,7 +38,16 @@ export function Navbar() {
             </Link>
           </SignedOut>
           <SignedIn>
-            <UserButton userProfileMode="modal" />
+            <UserAvatar
+              user={{
+                id: user?.id,
+                user_id: user?.user_id,
+                email: user?.email,
+                username: user?.username,
+                avatar_url: user?.avatar_url,
+                bio: user?.bio,
+              }}
+            />
           </SignedIn>
         </div>
       </header>

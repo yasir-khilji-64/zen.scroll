@@ -39,6 +39,7 @@ const Schema = z.object({
 type SchemaType = z.infer<typeof Schema>;
 
 type User = {
+  id?: string;
   user_id: string;
   username: string | null;
   email: string | undefined;

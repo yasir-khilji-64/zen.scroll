@@ -21,10 +21,10 @@ export async function createUser(data: UserType) {
   }
 }
 
-export async function getUsers() {
+export async function getUser() {
   try {
-    await connectToDatabase();
     const loggedInUser = await currentUser();
+    await connectToDatabase();
     const users = await UserModel.aggregate([
       {
         $match: {
