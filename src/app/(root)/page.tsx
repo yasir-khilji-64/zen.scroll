@@ -6,7 +6,7 @@ export default function Home() {
       <div className="flex flex-row gap-4 items-center">
         <Image
           className="relative"
-          src="/logo.svg"
+          src="/logo.png"
           alt="Next.js Logo"
           width={51}
           height={33}
